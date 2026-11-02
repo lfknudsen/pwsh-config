@@ -29,6 +29,7 @@ Set-Alias -Name nana -Value 7z
 
 # Adding another way to perform built-in command
 Set-Alias -Name quit -Value QuitPS
+Set-Alias -Name :q -Value QuitPS
 
 # Default prompt is:
 # function prompt {
