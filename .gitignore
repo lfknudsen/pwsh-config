@@ -1,0 +1,5 @@
+*
+!.gitignore
+!README.MD
+!LICENSE
+!Microsoft.PowerShell_profile.ps1
