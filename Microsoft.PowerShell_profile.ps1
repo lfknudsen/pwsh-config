@@ -126,27 +126,34 @@ Set-Alias -Name * -Value Print-Dir
 #
 # Set the prompt
 # Check the security identity of the user so we can prepend prompt with "ADMIN ".
-$local:___Admin = ''
-$private:___CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$private:___Principal = new-object System.Security.principal.windowsprincipal($___CurrentUser)
-if ($___Principal.IsInRole("Administrators")) { $___Admin = 'ADMIN ' }
-$local:___esc = [char]27 # \033
-$local:___sep = [System.IO.Path]::DirectorySeparatorChar # / or \
+$local:Admin = ''
+$private:CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$private:Principal = new-object System.Security.principal.windowsprincipal($CurrentUser)
+if ($Principal.IsInRole("Administrators")) { $Admin = 'ADMIN ' }
+$local:esc = [char]27 # \033
+$local:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 
 function prompt {
+    $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
+
+
     $current = $executionContext.SessionState.Path.CurrentLocation.Path
     $path = $([System.IO.Path]::GetDirectoryName($current))
     # If we're at root, $base will be root, and will be coloured accordingly.
     $base = $current
     # If we're not at root, we ensure the parent path ends in a path separator.
     if ($null -ne $path) {
-        if ($path[$path.Length - 1] -ne $___sep) {
-            $path += $___sep
+        if ($path[$path.Length - 1] -ne $sep) {
+            $path += $sep
         }
         # If we're not at root, we separate the final directory so it can be coloured accordingly.
-        $base = $($current.Substring($current.LastIndexOf($___sep) + 1))
+        $base = $($current.Substring($current.LastIndexOf($sep) + 1))
     }
-    "$___esc[31m$___Admin$___esc[36mPS$___esc[0m $___esc[90m$path$___esc[0m$base$('>' * ($nestedPromptLevel + 1)) "
+    $caretColour = "$esc[36m"
+    if ($Admin -ne '') {
+        $caretColour = "$esc[31m"
+    } 
+    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) "
 }
 
 # Window title
