@@ -174,3 +174,13 @@ Set-PSReadLineOption -AddToHistoryHandler {
 [Net.ServicePointManager]::SecurityProtocol =
 [Net.ServicePointManager]::SecurityProtocol -bor
 [Net.SecurityProtocolType]::Tls12
+
+# Add argument completer for the dotnet CLI tool
+$scriptblock = {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    dotnet complete --position $cursorPosition $commandAst.ToString() |
+        ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+}
+Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $scriptblock
