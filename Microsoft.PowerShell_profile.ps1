@@ -86,6 +86,7 @@ Remove-Item alias:ls
 Remove-Item alias:cd
 Remove-Item alias:man
 Remove-Item alias:pwd
+Remove-Item alias:cat
 
 # Overridding built-in commands to use my version
 Set-Alias -Name cd -Value Change-Dir.ps1
@@ -118,6 +119,7 @@ Set-Alias -Name ~ -Value Go-Home
 Set-Alias -Name whereami -Value Print-Dir
 Set-Alias -Name here -Value Print-Dir
 Set-Alias -Name * -Value Print-Dir
+Set-Alias -Name read -Value Get-Content
 
 # Default prompt is:
 # function prompt {
@@ -153,7 +155,7 @@ function prompt {
     if ($Admin -ne '') {
         $caretColour = "$esc[31m"
     } 
-    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) "
+    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
 }
 
 # Window title
