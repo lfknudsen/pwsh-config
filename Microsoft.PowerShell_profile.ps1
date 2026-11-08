@@ -81,6 +81,11 @@ function List-DirContents {
     ls.exe $arguments
 }
 
+
+# Global variables
+$global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
+$global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to the default directory.
+
 # POSIX commands which PowerShell override with PowerShell commands, but
 # where I'd rather use the real thing from a binutils package or similar
 Remove-Item alias:curl
@@ -135,14 +140,9 @@ $private:CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $private:Principal = new-object System.Security.principal.windowsprincipal($CurrentUser)
 if ($Principal.IsInRole("Administrators")) { $Admin = 'ADMIN ' }
 $local:esc = [char]27 # \033 aka \e
-$global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 
 function prompt {
-    # Window title
-    $host.ui.rawui.WindowTitle = "PS $pwd"
-
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
-
 
     $current = $executionContext.SessionState.Path.CurrentLocation.Path
     $path = $([System.IO.Path]::GetDirectoryName($current))
@@ -150,20 +150,24 @@ function prompt {
     $base = $current
     # If we're not at root, we ensure the parent path ends in a path separator.
     if ($null -ne $path) {
+        if ($path.Length -gt 50) {
+            $path = $path.ToString().TrimEnd($sep)
+            $parts = $path.ToString().Split($sep)
+            if ($parts.Length -gt 2) {
+                $path = "$($parts[0])$sep...$sep$($parts[$parts.Length - 1])$sep"
+            }
+        }
+        
         if ($path[$path.Length - 1] -ne $sep) {
             $path += $sep
         }
         # If we're not at root, we separate the final directory so it can be coloured accordingly.
         $base = $($current.Substring($current.LastIndexOf($sep) + 1))
     }
-    if ($path.Length -gt 50) {
-        $path = $path.ToString().TrimEnd($sep)
-        $parts = $path.ToString().Split($sep)
-        if ($parts.Length -gt 2) {
-            Write-Host $ell
-            $path = "$($parts[0])$sep...$sep$($parts[$parts.Length - 1])$sep"
-        }
-    }
+
+    # Window title
+    $host.ui.rawui.WindowTitle = "$path$base"
+
     $caretColour = "$esc[36m"
     if ($Admin -ne '') {
         $caretColour = "$esc[31m"
