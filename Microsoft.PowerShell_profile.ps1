@@ -3,8 +3,13 @@
 $OutputEncoding = [Console]::InputEncoding = `
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
+# Make environment use TLS, which is needed for the PowerShell package repositoory.
+[Net.ServicePointManager]::SecurityProtocol = `
+    [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+
 # =================================================================================================
-# Functions being referenced later:
+# FUNCTIONS
+
 # Exits the terminal
 function QuitPS {
     Invoke-Command -ScriptBlock { exit }
@@ -84,11 +89,14 @@ function List-DirContents {
     }
     ls.exe $arguments
 }
-# =================================================================================================
 
-# Global variables
+# =================================================================================================
+# GLOBAL VARIABLES
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 $global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to the default directory.
+
+# =================================================================================================
+# ALIASES
 
 # POSIX commands which PowerShell override with PowerShell commands, but
 # where I'd rather use the real thing from a binutils package or similar.
@@ -131,6 +139,9 @@ Set-Alias -Name whereami -Value Print-Dir
 Set-Alias -Name here -Value Print-Dir
 Set-Alias -Name * -Value Print-Dir
 Set-Alias -Name read -Value Get-Content
+
+# =================================================================================================
+# PROMPT
 
 # Default prompt is:
 # function prompt {
@@ -196,10 +207,6 @@ Set-PSReadLineOption -AddToHistoryHandler {
     # Add any other checks you want
     return $true
 }
-
-# Make environment use TLS, which is needed for the PowerShell package repositoory.
-[Net.ServicePointManager]::SecurityProtocol = `
-    [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 # Add argument completer for the dotnet CLI tool
 $scriptblock = {
