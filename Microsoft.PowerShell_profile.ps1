@@ -132,8 +132,8 @@ $local:Admin = ''
 $private:CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $private:Principal = new-object System.Security.principal.windowsprincipal($CurrentUser)
 if ($Principal.IsInRole("Administrators")) { $Admin = 'ADMIN ' }
-$local:esc = [char]27 # \033
-$local:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
+$local:esc = [char]27 # \033 aka \e
+$global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 
 function prompt {
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
@@ -173,9 +173,8 @@ Set-PSReadLineOption -AddToHistoryHandler {
 }
 
 # Make environment use TLS, which is needed for the PowerShell package repositoory.
-[Net.ServicePointManager]::SecurityProtocol =
-[Net.ServicePointManager]::SecurityProtocol -bor
-[Net.SecurityProtocolType]::Tls12
+[Net.ServicePointManager]::SecurityProtocol = `
+    [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 # Add argument completer for the dotnet CLI tool
 $scriptblock = {
