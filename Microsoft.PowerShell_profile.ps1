@@ -1,6 +1,10 @@
-$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
+# PowerShell to output wide characters correctly.
+$OutputEncoding = [Console]::InputEncoding = `
+    [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
-# Functions being referenced later
+# =================================================================================================
+# Functions being referenced later:
 # Exits the terminal
 function QuitPS {
     Invoke-Command -ScriptBlock { exit }
@@ -52,7 +56,7 @@ function List-DirContents {
         [Parameter(Mandatory = $false)][switch]$dirs = $false
     )
     $arguments = "-lhAGg", "--color=always"
-    # "--group-directories-first" <-- only available in later(?) versions of ls... my laptop has it, my desktop does not
+    # "--group-directories-first" <-- only available in some versions of ls... my laptop has it, my desktop does not
     if ($time -eq $true) {
         $arguments += "--sort=time"
     }
@@ -80,14 +84,14 @@ function List-DirContents {
     }
     ls.exe $arguments
 }
-
+# =================================================================================================
 
 # Global variables
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 $global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to the default directory.
 
 # POSIX commands which PowerShell override with PowerShell commands, but
-# where I'd rather use the real thing from a binutils package or similar
+# where I'd rather use the real thing from a binutils package or similar.
 Remove-Item alias:curl
 Remove-Item alias:ls
 Remove-Item alias:cd
@@ -148,8 +152,11 @@ function prompt {
     $path = $([System.IO.Path]::GetDirectoryName($current))
     # If we're at root, $base will be root, and will be coloured accordingly.
     $base = $current
-    # If we're not at root, we ensure the parent path ends in a path separator.
     if ($null -ne $path) {
+        # If prompt string is too long, collapse the internal path parts.
+        # Will always keep the first and last parts of the path, which will be prepended to
+        # the current directory's name.
+        # Example: "C:/.../Documents/WindowsPowerShell"
         if ($path.Length -gt 50) {
             $path = $path.ToString().TrimEnd($sep)
             $parts = $path.ToString().Split($sep)
@@ -158,6 +165,7 @@ function prompt {
             }
         }
         
+        # If we're not at root, we ensure the parent path ends in a path separator.
         if ($path[$path.Length - 1] -ne $sep) {
             $path += $sep
         }
@@ -165,13 +173,16 @@ function prompt {
         $base = $($current.Substring($current.LastIndexOf($sep) + 1))
     }
 
-    # Window title
+    # Set window title. We set it in here so that it's updated whenever the working directory changes.
     $host.ui.rawui.WindowTitle = "$path$base"
 
+    # The caret(s) at the end is/are coloured depending on mode.
     $caretColour = "$esc[36m"
     if ($Admin -ne '') {
         $caretColour = "$esc[31m"
-    } 
+    }
+
+    # Return value. Example: "ADMIN PS E:\repos\pwsh>" 
     "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
 }
 
