@@ -1,3 +1,5 @@
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
 # Functions being referenced later
 # Exits the terminal
 function QuitPS {
@@ -136,6 +138,9 @@ $local:esc = [char]27 # \033 aka \e
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 
 function prompt {
+    # Window title
+    $host.ui.rawui.WindowTitle = "PS $pwd"
+
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
 
 
@@ -151,15 +156,20 @@ function prompt {
         # If we're not at root, we separate the final directory so it can be coloured accordingly.
         $base = $($current.Substring($current.LastIndexOf($sep) + 1))
     }
+    if ($path.Length -gt 50) {
+        $path = $path.ToString().TrimEnd($sep)
+        $parts = $path.ToString().Split($sep)
+        if ($parts.Length -gt 2) {
+            Write-Host $ell
+            $path = "$($parts[0])$sep...$sep$($parts[$parts.Length - 1])$sep"
+        }
+    }
     $caretColour = "$esc[36m"
     if ($Admin -ne '') {
         $caretColour = "$esc[31m"
     } 
     "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
 }
-
-# Window title
-$host.ui.rawui.WindowTitle = "PS $pwd"
 
 # Specify how to prevent a command from being added to history.
 # Here it's any command which starts with a(t least one) space, like in Bash.
@@ -180,8 +190,8 @@ Set-PSReadLineOption -AddToHistoryHandler {
 $scriptblock = {
     param($wordToComplete, $commandAst, $cursorPosition)
     dotnet complete --position $cursorPosition $commandAst.ToString() |
-        ForEach-Object {
-            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-        }
+    ForEach-Object {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
 }
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $scriptblock
