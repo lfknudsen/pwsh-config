@@ -1,4 +1,4 @@
-# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
+﻿# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
 # PowerShell to output wide characters correctly.
 $OutputEncoding = [Console]::InputEncoding = `
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
@@ -120,13 +120,13 @@ $global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to 
 
 # POSIX commands which PowerShell override with PowerShell commands, but
 # where I'd rather use the real thing from a binutils package or similar.
-Remove-Item alias:curl
-Remove-Item alias:ls
-Remove-Item alias:cd
-Remove-Item alias:man
-Remove-Item alias:pwd
-Remove-Item alias:cat
-Remove-Item alias:rm
+Remove-Item alias:curl  *> $null
+Remove-Item alias:ls    *> $null
+Remove-Item alias:cd    *> $null
+Remove-Item alias:man   *> $null
+Remove-Item alias:pwd   *> $null
+Remove-Item alias:cat   *> $null
+Remove-Item alias:rm    *> $null
 
 # Overridding built-in commands to use my version
 Set-Alias -Name cd          -Value Change-Dir.ps1
