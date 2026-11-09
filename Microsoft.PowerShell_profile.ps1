@@ -191,6 +191,8 @@ function prompt {
     $path = $([System.IO.Path]::GetDirectoryName($current))
     # If we're at root, $base will be root, and will be coloured accordingly.
     $base = $current
+
+    # If not at root...
     if ($null -ne $path) {
         # If prompt string is too long, collapse the internal path parts.
         # Will always keep the first and last parts of the path, which will be prepended to
@@ -212,7 +214,7 @@ function prompt {
         $base = $($current.Substring($current.LastIndexOf($sep) + 1))
     }
 
-    # Set window title. We set it in here so that it's updated whenever the working directory changes.
+    # Set window title. We set it inside this function so that it's updated whenever the working directory changes.
     $host.ui.rawui.WindowTitle = "$path$base"
 
     # The caret(s) at the end is/are coloured depending on mode.
