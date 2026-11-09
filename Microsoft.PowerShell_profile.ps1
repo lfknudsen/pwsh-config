@@ -52,7 +52,7 @@ function Remove-File {
             Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromRemainingArguments = $true)]
-            [string[]]$paths
+        [string[]]$paths
     )
     if ($c) {
         return Remove-Item $paths
@@ -129,44 +129,44 @@ Remove-Item alias:cat
 Remove-Item alias:rm
 
 # Overridding built-in commands to use my version
-Set-Alias -Name cd -Value Change-Dir.ps1
-Set-Alias -Name mkdir -Value Make-Dir
-Set-Alias -Name ls -Value List-DirContents
-Set-Alias -Name pwd -Value Print-Dir
+Set-Alias -Name cd          -Value Change-Dir.ps1
+Set-Alias -Name mkdir       -Value Make-Dir
+Set-Alias -Name ls          -Value List-DirContents
+Set-Alias -Name pwd         -Value Print-Dir
 
 # Short-hands for my own programmes/scripts
-Set-Alias -Name ndir -Value New-Dir.ps1
-Set-Alias -Name download -Value gown.exe
-Set-Alias -Name uuid -Value guid.exe
-Set-Alias -Name space -Value Disk-Space.ps1
-Set-Alias -Name Disk-Size -Value Disk-Space.ps1
-Set-Alias -Name path -Value Open-Env.ps1
-Set-Alias -Name mkdirs -Value Make-Dirs.ps1
-Set-Alias -Name hide -Value Hide-File.ps1
-Set-Alias -Name reveal -Value Reveal-File.ps1
-Set-Alias -Name unhide -Value Reveal-File.ps1
-Set-Alias -Name cd- -Value Pop-Location
-Set-Alias -Name cd~ -Value Go-Home
-Set-Alias -Name cd.. -Value Go-Up
-Set-Alias -Name goto- -Value Pop-Location
-Set-Alias -Name goto~ -Value Go-Home
-Set-Alias -Name goto.. -Value Go-Up
-Set-Alias -Name rm -Value Remove-File
+Set-Alias -Name ndir        -Value New-Dir.ps1
+Set-Alias -Name download    -Value gown.exe
+Set-Alias -Name uuid        -Value guid.exe
+Set-Alias -Name space       -Value Disk-Space.ps1
+Set-Alias -Name Disk-Size   -Value Disk-Space.ps1
+Set-Alias -Name path        -Value Open-Env.ps1
+Set-Alias -Name mkdirs      -Value Make-Dirs.ps1
+Set-Alias -Name hide        -Value Hide-File.ps1
+Set-Alias -Name reveal      -Value Reveal-File.ps1
+Set-Alias -Name unhide      -Value Reveal-File.ps1
+Set-Alias -Name cd-         -Value Pop-Location
+Set-Alias -Name cd~         -Value Go-Home
+Set-Alias -Name cd..        -Value Go-Up
+Set-Alias -Name goto-       -Value Pop-Location
+Set-Alias -Name goto~       -Value Go-Home
+Set-Alias -Name goto..      -Value Go-Up
+Set-Alias -Name rm          -Value Remove-File
 
 # Short-hands for other applications
-Set-Alias -Name vpn -Value 'Mozilla VPN.exe'
-Set-Alias -Name 7zip -Value 7z
-Set-Alias -Name nana -Value 7z
+Set-Alias -Name vpn         -Value 'Mozilla VPN.exe'
+Set-Alias -Name 7zip        -Value 7z
+Set-Alias -Name nana        -Value 7z
 
 # Adding another way to perform built-in command
-Set-Alias -Name quit -Value QuitPS
-Set-Alias -Name :q -Value QuitPS
-Set-Alias -Name .. -Value Go-Up
-Set-Alias -Name ~ -Value Go-Home
-Set-Alias -Name whereami -Value Print-Dir
-Set-Alias -Name here -Value Print-Dir
-Set-Alias -Name * -Value Print-Dir
-Set-Alias -Name read -Value Get-Content
+Set-Alias -Name quit        -Value QuitPS
+Set-Alias -Name :q          -Value QuitPS
+Set-Alias -Name ..          -Value Go-Up
+Set-Alias -Name ~           -Value Go-Home
+Set-Alias -Name whereami    -Value Print-Dir
+Set-Alias -Name here        -Value Print-Dir
+Set-Alias -Name *           -Value Print-Dir
+Set-Alias -Name read        -Value Get-Content
 
 # =================================================================================================
 # PROMPT
@@ -227,13 +227,11 @@ function prompt {
 
 # Specify how to prevent a command from being added to history.
 # Here it's any command which starts with a(t least one) space, like in Bash.
+# Note that the `history` command will still show them, but they won't show up in subsequent
+# shells or when pressing the up-arrow to cycle through history.
 Set-PSReadLineOption -AddToHistoryHandler {
     param($command)
-    if ($command -like ' *') {
-        return $false
-    }
-    # Add any other checks you want
-    return $true
+    return (!($command -like ' *'))
 }
 
 # Add argument completer for the dotnet CLI tool
