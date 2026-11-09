@@ -80,7 +80,7 @@ function List-DirContents {
         [Parameter(Mandatory = $false)][switch]$files = $false,
         [Parameter(Mandatory = $false)][switch]$dirs = $false
     )
-    $arguments = "-lhAGg", "--color=always"
+    $arguments = "-lhAGg", "--color=auto"
     # "--group-directories-first" <-- only available in some versions of ls... my laptop has it, my desktop does not
     if ($time -eq $true) {
         $arguments += "--sort=time"
