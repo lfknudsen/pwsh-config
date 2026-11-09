@@ -45,7 +45,7 @@ function Go-Forward {
 # Retrieves the absolute path to the current location
 function Print-Dir {
     $dir = Get-Location
-    Write-Host $dir
+    Write-Output $dir
 }
 
 # Creates a new file with the given name.
@@ -170,6 +170,20 @@ function List-DirContents {
     ls.exe $arguments
 }
 
+function Location-Stack-Back {
+    Get-Location -StackName "primary" 2> $null
+    if (!$?) {
+        Write-Host "Empty."
+    }
+}
+
+function Location-Stack-Fwd {
+    Get-Location -StackName "secondary" 2> $null
+    if (!$?) {
+        Write-Host "Empty."
+    }
+}
+
 # =================================================================================================
 # GLOBAL VARIABLES
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
@@ -214,6 +228,10 @@ Set-Alias -Name goto~       -Value Go-Home
 Set-Alias -Name goto..      -Value Go-Up
 Set-Alias -Name rm          -Value Remove-File
 Set-Alias -Name new         -Value Create-Item
+
+# Debugging
+Set-Alias -Name -back       -Value Location-Stack-Back
+Set-Alias -Name -fwd        -Value Location-Stack-Fwd
 
 # Emulating commands from other shells
 Set-Alias -Name '-z'        -Value IsEmpty
