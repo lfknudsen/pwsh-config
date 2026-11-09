@@ -202,7 +202,7 @@ function prompt {
             $path = $path.ToString().TrimEnd($sep)
             $parts = $path.ToString().Split($sep)
             if ($parts.Length -gt 2) {
-                $path = "$($parts[0])$sep...$sep$($parts[$parts.Length - 1])$sep"
+                $path = "$($parts[0])$sep…$sep$($parts[$parts.Length - 1])$sep"
             }
         }
         
