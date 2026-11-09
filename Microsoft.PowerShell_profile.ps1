@@ -26,16 +26,20 @@ function Make-Dir {
 
 # Executes `cd ..`
 function Go-Up {
-    Push-Location -Path ..
+    Change-Directory ..
 }
 
 # Executes `cd ~`
 function Go-Home {
-    Push-Location -Path ~
+    Change-Dir ~
 }
 
 function Go-Back {
-    Pop-Location
+    Change-Dir -
+}
+
+function Go-Forward {
+    Change-Dir +
 }
 
 # Retrieves the absolute path to the current location
@@ -49,9 +53,30 @@ function Print-Dir {
 # Will fail if a file with the given name already exists.
 function Create-Item {
     param(
-        [Parameter(Mandatory = $true)][string]$path
+        [Parameter(Mandatory, ValueFromPipeline)][string]$path
     )
     New-Item -ItemType File $path 1> $null
+}
+
+function IsEmpty {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)][Object]$value
+    )
+    return $null -eq $value -or $value.Length -eq 0
+}
+
+function IsBlank {
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline)][string]$str
+    )
+    return [System.String]::IsNullOrWhiteSpace($str)
+}
+
+function IsNotEmpty {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)][Object]$value
+    )
+    return !(IsEmpty $value)
 }
 
 # Override of `rm` which always asks for confirmation unless user passes argument -c.
@@ -70,6 +95,22 @@ function Remove-File {
     Remove-Item -Confirm $paths
 }
 
+function File-Exists {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)][string]$path
+    )
+    return [System.IO.File]::Exists($path)
+}
+
+function Directory-Exists {
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)][string]$path
+    )
+    return [System.IO.Directory]::Exists($path)
+}
+
+# Retrieves the name of the current Git branch. Output is formatted for use in the Prompt function.
+# If the user is not standing in a Git repository, it returns the empty string.
 function Get-Branch {
     $branch = git branch --show-current 2> $null
     if ($?) {
@@ -81,7 +122,7 @@ function Get-Branch {
 
 # ls with some sane defaults.
 # Shows as a list with metadata (-l),
-# colours directories/symlinks (--color=always),
+# colours directories/symlinks (--color=auto),
 # make the filesizes human-readable (-h),
 # hides group column (-G),
 # hides owner column (-g),
@@ -164,20 +205,27 @@ Set-Alias -Name mkdirs      -Value Make-Dirs.ps1
 Set-Alias -Name hide        -Value Hide-File.ps1
 Set-Alias -Name reveal      -Value Reveal-File.ps1
 Set-Alias -Name unhide      -Value Reveal-File.ps1
-Set-Alias -Name cd-         -Value Pop-Location
+Set-Alias -Name cd-         -Value Go-Back
 Set-Alias -Name cd~         -Value Go-Home
 Set-Alias -Name cd..        -Value Go-Up
+Set-Alias -Name cd+         -Value Go-Forward
 Set-Alias -Name goto-       -Value Pop-Location
 Set-Alias -Name goto~       -Value Go-Home
 Set-Alias -Name goto..      -Value Go-Up
 Set-Alias -Name rm          -Value Remove-File
 Set-Alias -Name new         -Value Create-Item
-Set-Alias -Name :e          -Value nvim
+
+# Emulating commands from other shells
+Set-Alias -Name '-z'        -Value IsEmpty
+Set-Alias -Name '-n'        -Value IsNotEmpty
+Set-Alias -Name '-f'        -Value File-Exists
+Set-Alias -Name '-d'        -Value Directory-Exists
 
 # Short-hands for other applications
 Set-Alias -Name vpn         -Value 'Mozilla VPN.exe'
 Set-Alias -Name 7zip        -Value 7z
 Set-Alias -Name nana        -Value 7z
+Set-Alias -Name :e          -Value nvim
 
 # Adding another way to perform built-in command
 Set-Alias -Name quit        -Value QuitPS
