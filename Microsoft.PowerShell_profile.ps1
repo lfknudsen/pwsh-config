@@ -1,4 +1,4 @@
-# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
+﻿# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
 # PowerShell to output wide characters correctly.
 $OutputEncoding = [Console]::InputEncoding = `
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
@@ -68,6 +68,15 @@ function Remove-File {
         return Remove-Item $paths
     }
     Remove-Item -Confirm $paths
+}
+
+function Get-Branch {
+    $branch = git branch --show-current 2> $null
+    if ($?) {
+        return " ($([char]0xe725) $esc[3m$branch$esc[0m)"
+    } else {
+        return ""
+    }
 }
 
 # ls with some sane defaults.
@@ -177,7 +186,6 @@ Set-Alias -Name ..          -Value Go-Up
 Set-Alias -Name ~           -Value Go-Home
 Set-Alias -Name whereami    -Value Print-Dir
 Set-Alias -Name here        -Value Print-Dir
-Set-Alias -Name *           -Value Print-Dir
 Set-Alias -Name read        -Value Get-Content
 
 # =================================================================================================
@@ -198,6 +206,7 @@ $local:esc = [char]27 # \033 aka \e
 
 function prompt {
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
+    $branch = ""#Get-Branch
 
     $current = $executionContext.SessionState.Path.CurrentLocation.Path
     $path = $([System.IO.Path]::GetDirectoryName($current))
@@ -210,7 +219,7 @@ function prompt {
         # Will always keep the first and last parts of the path, which will be prepended to
         # the current directory's name.
         # Example: "C:/.../Documents/WindowsPowerShell"
-        if ($path.Length -gt 50) {
+        if ($current.Length + $branch.Length -gt 50) {
             $path = $path.ToString().TrimEnd($sep)
             $parts = $path.ToString().Split($sep)
             if ($parts.Length -gt 2) {
@@ -236,7 +245,7 @@ function prompt {
     }
 
     # Return value. Example: "ADMIN PS E:\repos\pwsh>" 
-    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
+    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$branch$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
 }
 
 # Specify how to prevent a command from being added to history.
