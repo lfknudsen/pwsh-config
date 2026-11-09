@@ -26,7 +26,7 @@ function Make-Dir {
 
 # Executes `cd ..`
 function Go-Up {
-    Change-Directory ..
+    Change-Dir ..
 }
 
 # Executes `cd ~`
