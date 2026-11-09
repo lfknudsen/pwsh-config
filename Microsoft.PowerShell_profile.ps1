@@ -44,6 +44,22 @@ function Print-Dir {
     Write-Host $dir
 }
 
+# Override of `rm` which always asks for confirmation unless user passes argument -c.
+function Remove-File {
+    param (
+        [Parameter(Mandatory = $false)][switch]$c = $false,
+        [Parameter(
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromRemainingArguments = $true)]
+            [string[]]$paths
+    )
+    if ($c) {
+        return Remove-Item $paths
+    }
+    Remove-Item -Confirm $paths
+}
+
 # ls with some sane defaults.
 # Shows as a list with metadata (-l),
 # colours directories/symlinks (--color=always),
@@ -110,6 +126,7 @@ Remove-Item alias:cd
 Remove-Item alias:man
 Remove-Item alias:pwd
 Remove-Item alias:cat
+Remove-Item alias:rm
 
 # Overridding built-in commands to use my version
 Set-Alias -Name cd -Value Change-Dir.ps1
@@ -134,6 +151,7 @@ Set-Alias -Name cd.. -Value Go-Up
 Set-Alias -Name goto- -Value Pop-Location
 Set-Alias -Name goto~ -Value Go-Home
 Set-Alias -Name goto.. -Value Go-Up
+Set-Alias -Name rm -Value Remove-File
 
 # Short-hands for other applications
 Set-Alias -Name vpn -Value 'Mozilla VPN.exe'
