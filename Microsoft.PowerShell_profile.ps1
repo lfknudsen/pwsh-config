@@ -26,12 +26,16 @@ function Make-Dir {
 
 # Executes `cd ..`
 function Go-Up {
-    Set-Location -Path ..
+    Push-Location -Path ..
 }
 
 # Executes `cd ~`
 function Go-Home {
-    Set-Location -Path ~
+    Push-Location -Path ~
+}
+
+function Go-Back {
+    Pop-Location
 }
 
 # Retrieves the absolute path to the current location
@@ -124,6 +128,9 @@ Set-Alias -Name mkdirs -Value Make-Dirs.ps1
 Set-Alias -Name hide -Value Hide-File.ps1
 Set-Alias -Name reveal -Value Reveal-File.ps1
 Set-Alias -Name unhide -Value Reveal-File.ps1
+Set-Alias -Name cd- -Value Go-Back
+Set-Alias -Name cd~ -Value Go-Home
+Set-Alias -Name cd.. -Value Go-Up
 
 # Short-hands for other applications
 Set-Alias -Name vpn -Value 'Mozilla VPN.exe'
