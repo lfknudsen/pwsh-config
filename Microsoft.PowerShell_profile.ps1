@@ -128,9 +128,12 @@ Set-Alias -Name mkdirs -Value Make-Dirs.ps1
 Set-Alias -Name hide -Value Hide-File.ps1
 Set-Alias -Name reveal -Value Reveal-File.ps1
 Set-Alias -Name unhide -Value Reveal-File.ps1
-Set-Alias -Name cd- -Value Go-Back
+Set-Alias -Name cd- -Value Pop-Location
 Set-Alias -Name cd~ -Value Go-Home
 Set-Alias -Name cd.. -Value Go-Up
+Set-Alias -Name goto- -Value Pop-Location
+Set-Alias -Name goto~ -Value Go-Home
+Set-Alias -Name goto.. -Value Go-Up
 
 # Short-hands for other applications
 Set-Alias -Name vpn -Value 'Mozilla VPN.exe'
