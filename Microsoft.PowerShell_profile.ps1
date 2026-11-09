@@ -1,4 +1,4 @@
-﻿# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
+# Set output encoding. Doesn't seem to work at all, but I am at my wits' end with getting
 # PowerShell to output wide characters correctly.
 $OutputEncoding = [Console]::InputEncoding = `
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
@@ -42,6 +42,16 @@ function Go-Back {
 function Print-Dir {
     $dir = Get-Location
     Write-Host $dir
+}
+
+# Creates a new file with the given name.
+# If it succeeds, nothing is printed to stdout.
+# Will fail if a file with the given name already exists.
+function Create-Item {
+    param(
+        [Parameter(Mandatory = $true)][string]$path
+    )
+    New-Item -ItemType File $path 1> $null
 }
 
 # Override of `rm` which always asks for confirmation unless user passes argument -c.
@@ -152,6 +162,8 @@ Set-Alias -Name goto-       -Value Pop-Location
 Set-Alias -Name goto~       -Value Go-Home
 Set-Alias -Name goto..      -Value Go-Up
 Set-Alias -Name rm          -Value Remove-File
+Set-Alias -Name new         -Value Create-Item
+Set-Alias -Name :e          -Value nvim
 
 # Short-hands for other applications
 Set-Alias -Name vpn         -Value 'Mozilla VPN.exe'
