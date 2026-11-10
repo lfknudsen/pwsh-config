@@ -194,13 +194,14 @@ $global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to 
 
 # POSIX commands which PowerShell override with PowerShell commands, but
 # where I'd rather use the real thing from a binutils package or similar.
-Remove-Item alias:curl  *> $null
-Remove-Item alias:ls    *> $null
-Remove-Item alias:cd    *> $null
-Remove-Item alias:man   *> $null
-Remove-Item alias:pwd   *> $null
-Remove-Item alias:cat   *> $null
-Remove-Item alias:rm    *> $null
+Remove-Item alias:curl      *> $null
+Remove-Item alias:ls        *> $null
+Remove-Item alias:cd        *> $null
+Remove-Item alias:man       *> $null
+Remove-Item alias:pwd       *> $null
+Remove-Item alias:cat       *> $null
+Remove-Item alias:rm        *> $null
+Remove-Item alias:echo      *> $null
 
 # Overridding built-in commands to use my version
 Set-Alias -Name cd          -Value Change-Dir.ps1
