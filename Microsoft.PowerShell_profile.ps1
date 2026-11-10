@@ -124,6 +124,7 @@ function Directory-Exists {
 
 # Retrieves the name of the current Git branch. Output is formatted for use in the Prompt function.
 # If the user is not standing in a Git repository, it returns the empty string.
+# Uses a NerdFont character in the output.
 function Get-Branch {
     $branch = git branch --show-current 2> $null
     if ($?) {
