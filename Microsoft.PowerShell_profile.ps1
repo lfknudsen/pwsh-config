@@ -60,9 +60,13 @@ function Print-Dir {
 # Will fail if a file with the given name already exists.
 function Create-Item {
     param(
-        [Parameter(Mandatory, ValueFromPipeline)][string]$path
+        [Parameter(Mandatory, ValueFromPipeline)][string[]]$path
     )
-    New-Item -ItemType File $path 1> $null
+    process {
+        foreach ($p in $path) {
+            New-Item -ItemType File $p 1> $null
+        }
+    }
 }
 
 function IsEmpty {
