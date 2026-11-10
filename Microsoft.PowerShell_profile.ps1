@@ -100,10 +100,12 @@ function Remove-File {
             ValueFromRemainingArguments = $true)]
         [string[]]$paths
     )
-    if ($c) {
-        return Remove-Item $paths
+    process {
+        if ($c) {
+            return Remove-Item $paths
+        }
+        Remove-Item -Confirm $paths
     }
-    Remove-Item -Confirm $paths
 }
 
 function File-Exists {
