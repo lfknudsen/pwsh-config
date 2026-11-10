@@ -132,13 +132,13 @@ function Get-Branch {
 # Only works on Windows, since it calls `ls.exe` (in order for function to be aliased to `ls`).
 function List-DirContents {
     param (
-        [Parameter(Mandatory = $false)][switch]$time = $false,
-        [Parameter(Mandatory = $false)][switch]$name = $false,
-        [Parameter(Mandatory = $false)][switch]$ext = $false,
-        [Parameter(Mandatory = $false)][switch]$size = $false,
-        [Parameter(Mandatory = $false)][switch]$rev = $false,
+        [Parameter(Mandatory = $false)][switch]$time  = $false,
+        [Parameter(Mandatory = $false)][switch]$name  = $false,
+        [Parameter(Mandatory = $false)][switch]$ext   = $false,
+        [Parameter(Mandatory = $false)][switch]$size  = $false,
+        [Parameter(Mandatory = $false)][switch]$rev   = $false,
         [Parameter(Mandatory = $false)][switch]$files = $false,
-        [Parameter(Mandatory = $false)][switch]$dirs = $false
+        [Parameter(Mandatory = $false)][switch]$dirs  = $false
     )
     $arguments = "-lhAGg", "--color=auto"
     # "--group-directories-first" <-- only available in some versions of ls... my laptop has it, my desktop does not
