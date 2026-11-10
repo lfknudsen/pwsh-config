@@ -265,15 +265,15 @@ Set-Alias -Name read        -Value Get-Content
 #
 # Set the prompt
 # Check the security identity of the user so we can prepend prompt with "ADMIN ".
-$local:Admin = ''
+$local:___Admin___ = ''
 $private:CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $private:Principal = new-object System.Security.principal.windowsprincipal($CurrentUser)
-if ($Principal.IsInRole("Administrators")) { $Admin = 'ADMIN ' }
+if ($Principal.IsInRole("Administrators")) { $___Admin___ = 'ADMIN ' }
 $local:esc = [char]27 # \033 aka \e
 
 function prompt {
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
-    $branch = ""#Get-Branch
+    $branch = ""#Get-Branch # Commented out because it's noticeably slower
 
     $current = $executionContext.SessionState.Path.CurrentLocation.Path
     $path = $([System.IO.Path]::GetDirectoryName($current))
@@ -307,12 +307,12 @@ function prompt {
 
     # The caret(s) at the end is/are coloured depending on mode.
     $caretColour = "$esc[36m"
-    if ($Admin -ne '') {
+    if ($___Admin___ -ne '') {
         $caretColour = "$esc[31m"
     }
 
     # Return value. Example: "ADMIN PS E:\repos\pwsh>" 
-    "$debugPrefix$esc[31m$Admin$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$branch$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
+    "$debugPrefix$esc[31m$___Admin___$esc[36mPS$esc[0m $esc[90m$path$esc[0m$base$branch$caretColour$('>' * ($nestedPromptLevel + 1)) $esc[0m"
 }
 
 # Specify how to prevent a command from being added to history.
