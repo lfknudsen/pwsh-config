@@ -269,9 +269,9 @@ $local:___Admin___ = ''
 $private:CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $private:Principal = new-object System.Security.principal.windowsprincipal($CurrentUser)
 if ($Principal.IsInRole("Administrators")) { $___Admin___ = 'ADMIN ' }
-$local:esc = [char]27 # \033 aka \e
 
 function prompt {
+    $local:esc = [char]27 # \033 aka \e
     $debugPrefix = if (Test-Path Variable:/PSDebugContext) { "$esc[32mDEBUG " } else { '' }
     $branch = ""#Get-Branch # Commented out because it's noticeably slower
 
