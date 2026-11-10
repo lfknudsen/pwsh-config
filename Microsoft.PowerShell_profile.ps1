@@ -18,10 +18,17 @@ function QuitPS {
 # Silent version of mkdir
 function Make-Dir {
     param(
-        [Parameter(Mandatory = $true)][string]$path
+        [Parameter(
+            Mandatory = $true,
+            ValueFromPipeline = $true)]
+        [string[]]$path
     )
 
-    New-Item -Type directory -Name $path > $Null
+    process {
+        foreach ($p in $path) {
+            New-Item -Type directory -Name $path > $Null
+        }
+    }
 }
 
 # Executes `cd ..`
