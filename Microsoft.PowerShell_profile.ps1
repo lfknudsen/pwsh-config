@@ -10,6 +10,20 @@ $OutputEncoding = [Console]::InputEncoding = `
 # =================================================================================================
 # FUNCTIONS
 
+function Set-Cursor {
+    param(
+        [Parameter(Mandatory)][Int32]$Cursor
+    )
+
+    $esc = [char]027
+    Write-Host "$esc[$Cursor q"
+}
+
+function Reset-Cursor {
+    $esc = [char]027
+    Write-Host "$esc[0 q"
+}
+
 # Exits the terminal
 function QuitPS {
     Invoke-Command -ScriptBlock { exit }
