@@ -21,7 +21,7 @@ function Set-Cursor {
 
 function Reset-Cursor {
     $esc = [char]027
-    Write-Host "$esc[0 q"
+    Write-Host "$esc[1 q"
 }
 
 # Exits the terminal
@@ -34,15 +34,14 @@ function Make-Dir {
     param(
         [Parameter(
             Mandatory = $true,
-            ValueFromPipeline = $true)]
+            ValueFromPipeline = $true,
+            ValueFromRemainingArguments = $true
+            )]
         [string[]]$path
     )
 
-    process {
-        foreach ($p in $path) {
-            New-Item -Type directory -Name $path > $Null
-        }
-    }
+    $p = [String]::Join(" ", $path)
+    New-Item -Type directory -Name $p > $Null
 }
 
 # Executes `cd ..`
@@ -212,6 +211,10 @@ function Location-Stack-Fwd {
     }
 }
 
+function Go-C { cd 'C:\' }
+function Go-D { cd 'D:\' }
+function Go-E { cd 'E:\' }
+
 # =================================================================================================
 # GLOBAL VARIABLES
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
@@ -257,6 +260,10 @@ Set-Alias -Name goto~       -Value Go-Home
 Set-Alias -Name goto..      -Value Go-Up
 Set-Alias -Name rm          -Value Remove-File
 Set-Alias -Name new         -Value Create-Item
+
+Set-Alias -Name C:          -Value Go-C
+Set-Alias -Name D:          -Value Go-D
+Set-Alias -Name E:          -Value Go-E
 
 # Debugging
 Set-Alias -Name -back       -Value Location-Stack-Back
