@@ -264,6 +264,9 @@ Set-Alias -Name new         -Value Create-Item
 Set-Alias -Name C:          -Value Go-C
 Set-Alias -Name D:          -Value Go-D
 Set-Alias -Name E:          -Value Go-E
+Set-Alias -Name 'C:\'       -Value Go-C
+Set-Alias -Name 'D:\'       -Value Go-D
+Set-Alias -Name 'E:\'       -Value Go-E
 
 # Debugging
 Set-Alias -Name -back       -Value Location-Stack-Back
