@@ -211,17 +211,17 @@ function Location-Stack-Fwd {
     }
 }
 
-function Go-C { cd 'C:\' }
-function Go-D { cd 'D:\' }
-function Go-E { cd 'E:\' }
-function Go-Root {
-    Change-Dir '^'
-}
+function Go-C { Change-Dir 'C:\' }
+function Go-D { Change-Dir 'D:\' }
+function Go-E { Change-Dir 'E:\' }
+function Go-Root { Change-Dir '^' }
+function Go-Default { Change-Dir '?' }
 
 # =================================================================================================
 # GLOBAL VARIABLES
 $global:sep = [System.IO.Path]::DirectorySeparatorChar # / or \
 $global:repos = "$pwd${sep}repos" # I have my repositories in a subdirectory to the default directory.
+$___initialDirectory___ = $pwd.Path
 
 # =================================================================================================
 # ALIASES
@@ -272,6 +272,8 @@ Set-Alias -Name E:          -Value Go-E
 Set-Alias -Name 'C:\'       -Value Go-C
 Set-Alias -Name 'D:\'       -Value Go-D
 Set-Alias -Name 'E:\'       -Value Go-E
+Set-Alias -Name 'cd?'       -Value Go-Default
+Set-Alias -Name '?'         -Value Go-Default
 
 # Debugging
 Set-Alias -Name -back       -Value Location-Stack-Back
