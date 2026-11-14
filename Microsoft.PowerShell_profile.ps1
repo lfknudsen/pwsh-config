@@ -214,6 +214,9 @@ function Location-Stack-Fwd {
 function Go-C { cd 'C:\' }
 function Go-D { cd 'D:\' }
 function Go-E { cd 'E:\' }
+function Go-Root {
+    Change-Dir '^'
+}
 
 # =================================================================================================
 # GLOBAL VARIABLES
@@ -255,6 +258,8 @@ Set-Alias -Name cd-         -Value Go-Back
 Set-Alias -Name cd~         -Value Go-Home
 Set-Alias -Name cd..        -Value Go-Up
 Set-Alias -Name cd+         -Value Go-Forward
+Set-Alias -Name cd^         -Value Go-Root
+Set-Alias -Name ^           -Value GO-Root
 Set-Alias -Name goto-       -Value Pop-Location
 Set-Alias -Name goto~       -Value Go-Home
 Set-Alias -Name goto..      -Value Go-Up
